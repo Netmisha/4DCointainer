@@ -98,7 +98,20 @@ void ShowCurrentNode(Tree& tree)
 }
 void ShowCurrentRing(Tree& tree)
 {
-    PNod self = tree.Iter();
+    size_t size = tree.GetRingLen();
+    int*   ptr  = tree.RingToArr();
+
+
+    std::cout << "ring of " << size << " elements: ";
+
+    for (int i = 0; i < size; ++i)
+    {
+        std::cout.width(5);
+        std::cout << ptr[i] << " ";
+    }
+    std::cout << std::endl;
+
+    /*PNod self = tree.Iter();
     if (!self)
     {
         std::cout.width(5);
@@ -130,7 +143,7 @@ void ShowCurrentRing(Tree& tree)
     }
     std::cout << std::endl;
     std::cout.width(5);
-    std::cout << (down ? std::to_string(down->GetVal()) : "{}") << std::endl;
+    std::cout << (down ? std::to_string(down->GetVal()) : "{}") << std::endl;*/
 
 }
 
@@ -138,11 +151,14 @@ void TestGotoNext(Tree&);
 void TestGotoPrev(Tree&);
 void TestGotoUber(Tree&);
 void TestGotoDown(Tree&);
+void TestGotoRoot(Tree&);
 
 void TestPushIter(Tree&);
 void TestPushNext(Tree&);
 void TestPushPrev(Tree&);
 void TestPushDown(Tree&);
+
+void TestPopIter(Tree&);
 
 int MainTest()
 {
@@ -199,6 +215,11 @@ int MainTest()
                     TestGotoDown(tree);
                     continue;
                 }
+                if (str == "root")
+                {
+                    TestGotoRoot(tree);
+                    continue;
+                }
             }
 
             if (str == "push")
@@ -226,6 +247,11 @@ int MainTest()
                     TestPushDown(tree);
                     continue;
                 }
+            }
+            if (str == "pop")
+            {
+                TestPopIter(tree);
+                continue;
             }
 
             std::cout << "unknown command, try:" << std::endl;
@@ -297,6 +323,21 @@ void TestGotoDown(Tree& tree)
         std::cout << "to nowhere" << std::endl;
     }
 }
+void TestGotoRoot(Tree&tree)
+{
+    std::cout << "Going down from: " << std::endl;
+    ShowCurrentNode(tree);
+
+    if (tree.GotoRoot())
+    {
+        std::cout << "to" << std::endl;
+        ShowCurrentNode(tree);
+    }
+    else
+    {
+        std::cout << "to nowhere" << std::endl;
+    }
+}
 
 int* GonnaPush(std::string what)
 {
@@ -330,5 +371,20 @@ void TestPushDown(Tree& tree)
     std::cout << (result ? "ok" : "fail") << std::endl;
 }
 
+void TestPopIter(Tree& tree)
+{
+    std::cout << "trying to pop: " << std::endl;
+    ShowCurrentNode(tree);
+
+    if (tree.PopIter())
+    {
+        std::cout << "success!" << std::endl;
+        ShowCurrentNode(tree);
+    }
+    else
+    {
+        std::cout << "fail" << std::endl;
+    }
+}
 
 #endif

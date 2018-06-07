@@ -1,30 +1,27 @@
-#pragma once
+#ifndef AQUA_BOT_TREE
+#define AQUA_BOT_TREE
+
+#include <ciso646>
 
 template<class Type>
 struct Node
 {
-    Node(Type const* ptr) 
-    {
-        pval = const_cast<int*>(ptr);
+    Node(Type const* ptr) {
+        pval = const_cast<Type*>(ptr);
     }
-    ~Node()
-    {
+    ~Node() {
         delete pval;
     }
-    Type const& GetVal() const
-    {
+    Type const& GetVal() const {
         return *pval;
     }
-    void        SetVal(Type const* ptr)
-    {
+    void        SetVal(Type const* ptr) {
         delete pval;
-        pval = const_cast<int*>(ptr);
+        pval = const_cast<Type*>(ptr);
     }
-    void        SetVal(Type const& value) const
-    {
+    void        SetVal(Type const& value) const {
         *pval = value;
     }
-
     Node* uber = nullptr;
     Node* next = nullptr;
     Node* prev = nullptr;
@@ -37,48 +34,50 @@ template<class Type>
 class XTree
 {
 public:
-    XTree()
-    {}
-    ~XTree()
-    {
+    XTree() {}
+    ~XTree() {
         RecursiveDestruction(root);
     }
-    using XNode = Node<Type>;
-    // returns current in-tree position
-    XNode* Iter() const { return iter; }
 
-    
-    // change in-tree position by 1 hop 
-    // returns false on fail
+    using XNode = Node<Type>;
+    //typedef Node<Type> XNode;
+
+    XNode* Iter() const { return iter; }
+    XNode* Root() const { return root; }
+
     bool GotoNext() { return GoPlaces(+1, 0); }
     bool GotoPrev() { return GoPlaces(-1, 0); }
     bool GotoUber() { return GoPlaces(0, -1); }
     bool GotoDown() { return GoPlaces(0, +1); }
+    bool GotoRoot()
+    {
+        if (root)
+        {
+            iter = root;
+            return true;
+        }
+        else
+            return false;
+    }
 
-    // push item into tree in relation to current position
 
-    // changes value of iter (sets if empty tree)
     bool PushIter(Type const* p)
     {
-        if (! iter)
+        if (not iter)
         {
             XNode* node = new XNode(p);
             root = iter = node;
-            
+
             iter->next = iter;
             iter->prev = iter;
         }
-
-        else
-        {
+        else {
             iter->SetVal(p);
         }
 
         return true;
     }
-    
-    // result: this->prev == new
-    bool PushPrev(Type const* p) 
+    bool PushPrev(Type const* p)
     {
         bool pushResult = false;
 
@@ -100,10 +99,10 @@ public:
 
             pushResult = true;;
         }
-        
+
         return pushResult;
     }
-    bool PushNext(Type const* p) // result: this->next == new
+    bool PushNext(Type const* p)
     {
         bool pushResult = false;
 
@@ -125,10 +124,10 @@ public:
 
             pushResult = true;
         }
-        
+
         return pushResult;
     }
-    bool PushDown(Type const* p) // result: this->down == new, down->next = down_old
+    bool PushDown(Type const* p)
     {
         bool pushResult = false;
 
@@ -142,11 +141,11 @@ public:
             else
             {
                 XNode* node = new XNode(p);
-                
+
                 node->next = node;
                 node->prev = node;
 
-                iter->down = node; // INVEST
+                iter->down = node;
                 node->uber = iter;
             }
 
@@ -176,31 +175,95 @@ public:
             return true;
         }
 
-        if (iter->uber->down == iter)
+        XNode* kill = iter;
+
+        if (iter->uber)
+            if (iter->uber->down == iter)
+            {
+                iter->uber->down = iter->next;
+            }
+
+        iter->prev->next = iter->next;
+        iter->next->prev = iter->prev;
+
+        iter = iter->next;
+
+        RecursiveDestruction(kill->down);
+        delete kill;
+
+        return true;
+    }
+
+    /**
+    Get array representing current ring
+    Keeps last iter copy and last return result
+
+    Tracks 
+        if iter was changed
+        if ring size has changed
+    Checks if memory obtained from last call needs being set free
+    */
+    Type* RingToArr() const
+    {
+        static Type* ptr = nullptr;
+        //static XNode* rter = iter;
+
+        if (iter)
         {
-            iter->uber->down = iter->next;
-
-            iter->prev->next = iter->next;
-            iter->next->prev = iter->prev;
-
-            XNode* kill = iter;
-            iter = iter->next;
-
-            RecursiveDestruction(kill);
-            return true;
+            if (not ptr)
+            {
+                ptr = GetIterRing();
+            }
+            else
+            {
+                delete[] ptr;
+                ptr = GetIterRing();
+                //rter = iter;
+            }
         }
+
+        return ptr;
+    }
+    size_t GetRingLen() const
+    {
+        size_t len = 0;
+        if (iter)
+        {
+            ++len;
+            for (XNode* it = iter->next; it != iter; it = it->next)
+            {
+                ++len;
+            }
+        }
+        return len;
     }
 protected:
-    XNode* root = nullptr; // always points at top el
-    XNode* iter = nullptr; // points at current element
+    XNode* root = nullptr;
+    XNode* iter = nullptr;
 
+    Type* GetIterRing() const
+    {
+        // calculate ring len 
+        size_t len = GetRingLen();
+
+        Type* ptr = new Type[len];
+
+        XNode* it = iter;
+        for (int i = 0; i< len; ++i)
+        {
+            ptr[i] = it->GetVal();
+            it = it->next;
+        }
+
+        return ptr;
+    }
     bool GoPlaces(int x, int y)
     {
         if (iter)
         {
             switch (x)
             {
-                case +1: 
+                case +1:
                     if (iter->next)
                     {
                         iter = iter->next;
@@ -232,24 +295,22 @@ protected:
                     }
                     break;
             }
-            
+
         }
         return false;
     }
-
     void RecursiveDestruction(XNode* node)
     {
         if (!node)
             return;
 
         RecursiveDestruction(node->down);
-        
+
         node->prev->next = nullptr;
 
         RecursiveDestruction(node->next);
 
-        std::cout << "killing " << node->GetVal() << std::endl;
-
         delete node;
     }
 };
+#endif
