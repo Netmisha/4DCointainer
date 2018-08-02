@@ -8,14 +8,18 @@
 using PNod = Node<int>*;
 using Tree = XTree<int>;
 
-void ShowCurrentNode(Tree& tree)
+void ShowCurrentNode(Tree const& tree)
 {
     auto ToStr = [](PNod node)
     {
         if (node)
+        {
             return std::to_string(node->GetVal());
+        }
         else
+        {
             return std::string("{}");
+        }
     };
 
     PNod self = tree.Iter();
@@ -30,9 +34,13 @@ void ShowCurrentNode(Tree& tree)
     {
         uber = tree.Iter()->uber;
         if (self->prev != self)
+        {
             prev = tree.Iter()->prev;
-        if (self->next !=self)
+        }
+        if (self->next != self)
+        {
             next = tree.Iter()->next;
+        }
         down = tree.Iter()->down;
     }
 
@@ -71,7 +79,7 @@ void ShowCurrentNode(Tree& tree)
         std::cout << std::endl;
     }
 }
-void ShowCurrentRing(Tree& tree)
+void ShowCurrentRing(Tree const& tree)
 {
     size_t size = tree.GetRingLen();
     int*   ptr  = tree.RingToArr();

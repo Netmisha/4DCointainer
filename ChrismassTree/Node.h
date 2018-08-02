@@ -200,7 +200,9 @@ public:
     bool PopIter()
     {
         if (!iter)
+        {
             return false;
+        }
 
         if (iter == root)
         {
@@ -306,7 +308,9 @@ private:
     void RecursiveDestruction(XNode* node)
     {
         if (!node)
+        {
             return;
+        }
 
         RecursiveDestruction(node->down);
 
