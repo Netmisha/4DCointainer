@@ -1,5 +1,5 @@
-#ifndef AQUA_BOT_TREE
-#define AQUA_BOT_TREE
+#ifndef __X__TREE__INCLUDED__
+#define __X__TREE__INCLUDED__
 
 #include <ciso646>
 
@@ -35,12 +35,12 @@ class XTree
 {
 public:
     XTree() {}
-    ~XTree() {
+    ~XTree() 
+    {
         RecursiveDestruction(root);
     }
 
     using XNode = Node<Type>;
-    //typedef Node<Type> XNode;
 
     XNode* Iter() const { return iter; }
     XNode* Root() const { return root; }
@@ -49,17 +49,7 @@ public:
     bool GotoPrev() { return GoPlaces(-1, 0); }
     bool GotoUber() { return GoPlaces(0, -1); }
     bool GotoDown() { return GoPlaces(0, +1); }
-    bool GotoRoot()
-    {
-        if (root)
-        {
-            iter = root;
-            return true;
-        }
-        else
-            return false;
-    }
-
+    bool GotoRoot() { return GoPlaces(0,  0); }
 
     bool PushIter(Type const* p)
     {
@@ -261,6 +251,12 @@ protected:
     {
         if (iter)
         {
+            if (x == y and y == 0)
+            {
+                iter = root;
+                return true;
+            }
+
             switch (x)
             {
                 case +1:
@@ -295,10 +291,10 @@ protected:
                     }
                     break;
             }
-
         }
         return false;
     }
+
     void RecursiveDestruction(XNode* node)
     {
         if (!node)
@@ -307,10 +303,9 @@ protected:
         RecursiveDestruction(node->down);
 
         node->prev->next = nullptr;
-
         RecursiveDestruction(node->next);
 
         delete node;
     }
 };
-#endif
+#endif // __X__TREE__INCLUDED__

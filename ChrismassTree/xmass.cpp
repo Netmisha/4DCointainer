@@ -1,28 +1,3 @@
-/*
-    create XTree<Type>
-    
-    init root:
-    ...
-        tree.PushIter(new Type);
-    ...
-
-    use Goto-functions to navigate
-        Uber, Prev, Next, Down
-
-    ...
-        tree.GotoNext() <==> iter = iter->next
-    ...
-
-    use Push-functions to add elements
-        Prev, Next, Down
-    ...
-        tree.PushPrev(new element) // push before iter
-    ...
-
-        tree.PushDown(element) <==> GotoDown, PushPrev, GotoUber
-*/
-
-
 #ifdef _DEBUG
 #define MainTest main
 #include <iostream>
@@ -101,7 +76,6 @@ void ShowCurrentRing(Tree& tree)
     size_t size = tree.GetRingLen();
     int*   ptr  = tree.RingToArr();
 
-
     std::cout << "ring of " << size << " elements: ";
 
     for (int i = 0; i < size; ++i)
@@ -111,264 +85,149 @@ void ShowCurrentRing(Tree& tree)
     }
     std::cout << std::endl;
 
-    /*PNod self = tree.Iter();
-    if (!self)
-    {
-        std::cout.width(5);
-        std::cout << "{}" << std::endl;
-        return;
-    }
-    PNod uber, prev, next, down;
-    {
-        uber = nullptr;
-        prev = nullptr;
-        next = nullptr;
-        down = nullptr;
-    }
-    if (self->uber)
-        uber = self->uber;
-    if (self->down)
-        down = self->down;
-    if (uber)
-    {
-        std::cout.width(5);
-        std::cout << (uber ? std::to_string(uber->GetVal()) : "{}") << std::endl;
-    }
-    std::cout.width(5);
-    std::cout << std::to_string(self->GetVal()) << " ";
-    for (next = self->next; next != self; next = next->next)
-    {
-        std::cout.width(5);
-        std::cout << std::to_string(next->GetVal()) << " ";
-    }
-    std::cout << std::endl;
-    std::cout.width(5);
-    std::cout << (down ? std::to_string(down->GetVal()) : "{}") << std::endl;*/
-
+    delete[] ptr;
 }
 
-void TestGotoNext(Tree&);
-void TestGotoPrev(Tree&);
-void TestGotoUber(Tree&);
-void TestGotoDown(Tree&);
-void TestGotoRoot(Tree&);
 
-void TestPushIter(Tree&);
-void TestPushNext(Tree&);
-void TestPushPrev(Tree&);
-void TestPushDown(Tree&);
+int* GetInt();
+
+#define TestPush(Way, tree) \
+{\
+    int* p = GetInt();\
+    bool result = tree.Push##Way (p);\
+    std::cout << (result ? "ok" : "fail") << std::endl;\
+}
+
+#define TestGoto(Way, tree)\
+{\
+    std::cout << "Going " #Way " from: " << std::endl;\
+    ShowCurrentNode(tree);\
+    if (tree.Goto##Way())\
+    {\
+        std::cout << "to" << std::endl;\
+        ShowCurrentNode(tree);\
+    }\
+    else\
+    {\
+        std::cout << "to nowhere" << std::endl;\
+    }\
+}
 
 void TestPopIter(Tree&);
 
+
 int MainTest()
 {
+    std::cout << "MainTest():" << std::endl;
+
+    Tree tree;
+
+    while (true)
     {
-        Tree tree;
+        std::string str;
+        std::cin >> str;
 
-        std::cout << "MainTest()" << std::endl;
-
-        while (true)
+        if (str == "quit")
         {
-            std::string str;
+            break;
+        }
+
+        if (str == "show")
+        {
             std::cin >> str;
 
-            if (str == "quit")
+            if (str == "elem")
             {
-                break;
-            }
-
-            if (str == "show") {
-                std::cin >> str;
-
-                if (str == "elem")
-                {
-                    ShowCurrentNode(tree);
-                    continue;
-                }
-
-                if (str == "ring")
-                {
-                    ShowCurrentRing(tree);
-                    continue;
-                }
-            }
-
-            if (str == "goto")
-            {
-                std::cin >> str;
-
-                if (str == "next") {
-                    TestGotoNext(tree);
-                    continue;
-                }
-                if (str == "prev") {
-                    TestGotoPrev(tree);
-                    continue;
-                }
-                if (str == "uber")
-                {
-                    TestGotoUber(tree);
-                    continue;
-                }
-                if (str == "down")
-                {
-                    TestGotoDown(tree);
-                    continue;
-                }
-                if (str == "root")
-                {
-                    TestGotoRoot(tree);
-                    continue;
-                }
-            }
-
-            if (str == "push")
-            {
-                std::cin >> str;
-
-
-                if (str == "iter")
-                {
-                    TestPushIter(tree);
-                    continue;
-                }
-                if (str == "next")
-                {
-                    TestPushNext(tree);
-                    continue;
-                }
-                if (str == "prev")
-                {
-                    TestPushPrev(tree);
-                    continue;
-                }
-                if (str == "down")
-                {
-                    TestPushDown(tree);
-                    continue;
-                }
-            }
-            if (str == "pop")
-            {
-                TestPopIter(tree);
+                ShowCurrentNode(tree);
                 continue;
             }
 
-            std::cout << "unknown command, try:" << std::endl;
-            std::cout << "show, go, push, iter, prev, uber, next, down" << std::endl;
+            if (str == "ring")
+            {
+                ShowCurrentRing(tree);
+                continue;
+            }
         }
+
+        if (str == "goto")
+        {
+            std::cin >> str;
+
+            if (str == "next")
+            {
+                TestGoto(Next, tree);
+                continue;
+            }
+            if (str == "prev")
+            {
+                TestGoto(Prev, tree);
+                continue;
+            }
+            if (str == "uber")
+            {
+                TestGoto(Uber, tree);
+                continue;
+            }
+            if (str == "down")
+            {
+                TestGoto(Down, tree);
+                continue;
+            }
+            if (str == "root")
+            {
+                TestGoto(Root, tree);
+                continue;
+            }
+        }
+
+        if (str == "push")
+        {
+            std::cin >> str;
+
+
+            if (str == "iter")
+            {
+                TestPush(Iter, tree);
+                continue;
+            }
+            if (str == "next")
+            {
+                TestPush(Next, tree);
+                continue;
+            }
+            if (str == "prev")
+            {
+                TestPush(Prev, tree);
+                continue;
+            }
+            if (str == "down")
+            {
+                TestPush(Down, tree);
+                continue;
+            }
+        }
+        if (str == "pop")
+        {
+            TestPopIter(tree);
+            continue;
+        }
+
+        std::cout << "unknown command, try:" << std::endl;
+        std::cout << "show  elem|ring" << std::endl;
+        std::cout << "push|goto  iter|prev|uber|next|down" << std::endl;
+        std::cout << "pop" << std::endl;
+        std::cout << "quit" << std::endl;
     }
+
     std::cout << "finish" << std::endl;
     return 0;
 }
 
-
-void TestGotoNext(Tree& tree)
-{
-    std::cout << "Going next from: " << std::endl;
-    ShowCurrentNode(tree);
-
-    if (tree.GotoNext())
-    {
-        std::cout << "to" << std::endl;
-        ShowCurrentNode(tree);
-    }
-    else
-    {
-        std::cout << "to nowhere" << std::endl;
-    }
-}
-void TestGotoPrev(Tree& tree)
-{
-    std::cout << "Going prev from: " << std::endl;
-    ShowCurrentNode(tree);
-
-    if (tree.GotoPrev())
-    {
-        std::cout << "to" << std::endl;
-        ShowCurrentNode(tree);
-    }
-    else
-    {
-        std::cout << "to nowhere" << std::endl;
-    }
-}
-void TestGotoUber(Tree& tree)
-{
-    std::cout << "Going uber from: " << std::endl;
-    ShowCurrentNode(tree);
-
-    if (tree.GotoUber())
-    {
-        std::cout << "to" << std::endl;
-        ShowCurrentNode(tree);
-    }
-    else
-    {
-        std::cout << "to nowhere" << std::endl;
-    }
-}
-void TestGotoDown(Tree& tree)
-{
-    std::cout << "Going down from: " << std::endl;
-    ShowCurrentNode(tree);
-
-    if (tree.GotoDown())
-    {
-        std::cout << "to" << std::endl;
-        ShowCurrentNode(tree);
-    }
-    else
-    {
-        std::cout << "to nowhere" << std::endl;
-    }
-}
-void TestGotoRoot(Tree&tree)
-{
-    std::cout << "Going down from: " << std::endl;
-    ShowCurrentNode(tree);
-
-    if (tree.GotoRoot())
-    {
-        std::cout << "to" << std::endl;
-        ShowCurrentNode(tree);
-    }
-    else
-    {
-        std::cout << "to nowhere" << std::endl;
-    }
-}
-
-int* GonnaPush(std::string what)
+int* GetInt()
 {
     int *p = new int;
     std::cin >> *p;
     return p;
-
-}
-void TestPushIter(Tree& tree)
-{
-    int* p = GonnaPush("iter");
-    bool result = tree.PushIter(p);
-    std::cout << (result ? "ok" : "fail") << std::endl;
-}
-void TestPushNext(Tree& tree)
-{
-    int* p = GonnaPush("next");
-    bool result = tree.PushNext(p);
-    std::cout << (result ? "ok" : "fail") << std::endl;
-}
-void TestPushPrev(Tree& tree)
-{
-    int* p = GonnaPush("prev");
-    bool result = tree.PushPrev(p);
-    std::cout << (result ? "ok" : "fail") << std::endl;
-}
-void TestPushDown(Tree& tree)
-{
-    int* p = GonnaPush("down");
-    bool result = tree.PushDown(p);
-    std::cout << (result ? "ok" : "fail") << std::endl;
 }
 
 void TestPopIter(Tree& tree)
