@@ -110,7 +110,8 @@ public:
             iter->next = iter;
             iter->prev = iter;
         }
-        else {
+        else 
+        {
             iter->SetVal(p);
         }
 
