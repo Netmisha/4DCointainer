@@ -45,11 +45,63 @@ public:
     XNode* Iter() const { return iter; }
     XNode* Root() const { return root; }
 
-    bool GoToNext() { return GoPlaces(+1, 0); }
-    bool GoToPrev() { return GoPlaces(-1, 0); }
-    bool GoToUber() { return GoPlaces(0, -1); }
-    bool GoToDown() { return GoPlaces(0, +1); }
-    bool GoToRoot() { return GoPlaces(0,  0); }
+    bool GoToNext() 
+    { 
+        if (iter)
+        {
+            if (iter->next)
+            {
+                iter = iter->next;
+                return true;
+            }
+        }
+        return false;
+    }
+    bool GoToPrev() 
+    { 
+        if (iter)
+        {
+            if (iter->prev)
+            {
+                iter = iter->prev;
+                return true;
+            }
+        }
+        return false;
+    }
+    bool GoToUber() 
+    { 
+        if (iter)
+        {
+            if (iter->uber)
+            {
+                iter = iter->uber;
+                return true;
+            }
+        }
+        return false;
+    }
+    bool GoToDown() 
+    { 
+        if (iter)
+        {
+            if (iter->down)
+            {
+                iter = iter->down;
+                return true;
+            }
+        }
+        return false;
+    }
+    bool GoToRoot()
+    {
+        if (root)
+        {
+            iter = root;
+            return true;
+        }
+        return false;
+    }
 
     bool PushIter(Type const* p)
     {
@@ -168,13 +220,17 @@ public:
         XNode* kill = iter;
 
         if (iter->uber)
-            if (iter->uber->down == iter)
+        {
+            auto uber = iter->uber;
+            if (uber->down == iter)
             {
-                iter->uber->down = iter->next;
+                uber->down = iter->next;
             }
-
-        iter->prev->next = iter->next;
-        iter->next->prev = iter->prev;
+        }
+        auto prev = iter->prev;
+        prev->next = iter->next;
+        auto next = iter->next;
+        next->prev = iter->prev;
 
         iter = iter->next;
 
@@ -227,13 +283,12 @@ public:
         }
         return len;
     }
-protected:
+private:
     XNode* root = nullptr;
     XNode* iter = nullptr;
 
     Type* GetIterRing() const
     {
-        // calculate ring len 
         size_t len = GetRingLen();
 
         Type* ptr = new Type[len];
@@ -246,53 +301,6 @@ protected:
         }
 
         return ptr;
-    }
-    bool GoPlaces(int x, int y)
-    {
-        if (iter)
-        {
-            if (x == y and y == 0)
-            {
-                iter = root;
-                return true;
-            }
-
-            switch (x)
-            {
-                case +1:
-                    if (iter->next)
-                    {
-                        iter = iter->next;
-                        return true;
-                    }
-                    break;
-                case -1:
-                    if (iter->prev)
-                    {
-                        iter = iter->prev;
-                        return true;
-                    }
-                    break;
-            }
-            switch (y)
-            {
-                case -1:
-                    if (iter->uber)
-                    {
-                        iter = iter->uber;
-                        return true;
-                    }
-                    break;
-                case +1:
-                    if (iter->down)
-                    {
-                        iter = iter->down;
-                        return true;
-                    }
-                    break;
-            }
-        }
-        return false;
     }
 
     void RecursiveDestruction(XNode* node)
