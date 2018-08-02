@@ -33,7 +33,7 @@ ABOUT
 
     The structure is quite hard to represent graphically becouse of its almost nature
     But the container is fun to move around inside (the xmass.cpp provides possibility of it)
-=====
+
 HOW TO
 ======
 
