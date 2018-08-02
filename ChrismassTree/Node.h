@@ -42,51 +42,41 @@ public:
     XNode* Iter() const { return iter; }
     XNode* Root() const { return root; }
 
-    bool GoToNext() 
-    { 
-        if (iter)
+    bool GoToNext()
+    {
+        if (iter and iter->next)
         {
-            if (iter->next)
-            {
-                iter = iter->next;
-                return true;
-            }
+            iter = iter->next;
+            return true;
+        }
+
+        return false;
+    }
+    bool GoToPrev()
+    {
+        if (iter and iter->prev)
+        {
+            iter = iter->prev;
+            return true;
+        }
+
+        return false;
+    }
+    bool GoToUber()
+    {
+        if (iter and iter->uber)
+        {
+            iter = iter->uber;
+            return true;
         }
         return false;
     }
-    bool GoToPrev() 
-    { 
-        if (iter)
+    bool GoToDown()
+    {
+        if (iter and iter->down)
         {
-            if (iter->prev)
-            {
-                iter = iter->prev;
-                return true;
-            }
-        }
-        return false;
-    }
-    bool GoToUber() 
-    { 
-        if (iter)
-        {
-            if (iter->uber)
-            {
-                iter = iter->uber;
-                return true;
-            }
-        }
-        return false;
-    }
-    bool GoToDown() 
-    { 
-        if (iter)
-        {
-            if (iter->down)
-            {
-                iter = iter->down;
-                return true;
-            }
+            iter = iter->down;
+            return true;
         }
         return false;
     }
