@@ -19,9 +19,6 @@ struct Node
         delete pval;
         pval = const_cast<Type*>(ptr);
     }
-    void        SetVal(Type const& value) const {
-        *pval = value;
-    }
     Node* uber = nullptr;
     Node* next = nullptr;
     Node* prev = nullptr;
