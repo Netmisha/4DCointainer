@@ -12,26 +12,26 @@ Basic element of container has acess to it's
 The container can be used to store (for example) a sequence of application menue's
 Like
 ```
-	MAIN_MENU
-	    <-   CHOICE_1  ->
-	        <-   SUB_CHOICE_1_1   <->   SUB_CHOICE_1_2   <->   SUB_CHOICE_1_3    <->   ...   <->   SUB_CHOICE_1_1
-	    <-   CHOICE_2  ->
-	        ...
-	            ...   ...   ...
-	    <-   CHOICE_3  ->
+MAIN_MENU
+    <-   CHOICE_1  ->
+        <-   SUB_CHOICE_1_1   <->   SUB_CHOICE_1_2   <->   SUB_CHOICE_1_3    <->   ...   <->   SUB_CHOICE_1_1
+    <-   CHOICE_2  ->
+        ...
+            ...   ...   ...
+    <-   CHOICE_3  ->
 ```
 Or
 ```
-	Game
-		Lvl-1
-			Area-11
-				Location-111 -- Location-112 -- Location-113
-					room-1111		room-1121		room-1131
-					room-1112		room-1122		room-1132
-					room-1113		room-1123		room-1133
-			Area-2
-		Lvl-2
-			Area-1
+Game
+	Lvl-1
+		Area-11
+			Location-111 -- Location-112 -- Location-113
+				room-1111		room-1121		room-1131
+				room-1112		room-1122		room-1132
+				room-1113		room-1123		room-1133
+		Area-2
+	Lvl-2
+		Area-1
 ```
 Etc.
 
