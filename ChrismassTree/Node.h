@@ -239,32 +239,17 @@ public:
         return true;
     }
 
-    /**
-    Get array representing current ring
-    Keeps last iter copy and last return result
-
-    Tracks 
-        if iter was changed
-        if ring size has changed
-    Checks if memory obtained from last call needs being set free
-    */
-    Type* RingToArr() const
+    Type* GetIterRing() const
     {
-        static Type* ptr = nullptr;
-        //static XNode* rter = iter;
+        size_t len = GetRingLen();
 
-        if (iter)
+        Type* ptr = new Type[len];
+
+        XNode* it = iter;
+        for (int i = 0; i< len; ++i)
         {
-            if (not ptr)
-            {
-                ptr = GetIterRing();
-            }
-            else
-            {
-                delete[] ptr;
-                ptr = GetIterRing();
-                //rter = iter;
-            }
+            ptr[i] = it->GetVal();
+            it = it->next;
         }
 
         return ptr;
@@ -285,22 +270,6 @@ public:
 private:
     XNode* root = nullptr;
     XNode* iter = nullptr;
-
-    Type* GetIterRing() const
-    {
-        size_t len = GetRingLen();
-
-        Type* ptr = new Type[len];
-
-        XNode* it = iter;
-        for (int i = 0; i< len; ++i)
-        {
-            ptr[i] = it->GetVal();
-            it = it->next;
-        }
-
-        return ptr;
-    }
 
     void RecursiveDestruction(XNode* node)
     {

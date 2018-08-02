@@ -82,7 +82,7 @@ void ShowCurrentNode(Tree const& tree)
 void ShowCurrentRing(Tree const& tree)
 {
     size_t size = tree.GetRingLen();
-    int*   ptr  = tree.RingToArr();
+    int*   ptr  = tree.GetIterRing();
 
     std::cout << "ring of " << size << " elements: ";
 
