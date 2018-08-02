@@ -45,11 +45,11 @@ public:
     XNode* Iter() const { return iter; }
     XNode* Root() const { return root; }
 
-    bool GotoNext() { return GoPlaces(+1, 0); }
-    bool GotoPrev() { return GoPlaces(-1, 0); }
-    bool GotoUber() { return GoPlaces(0, -1); }
-    bool GotoDown() { return GoPlaces(0, +1); }
-    bool GotoRoot() { return GoPlaces(0,  0); }
+    bool GoToNext() { return GoPlaces(+1, 0); }
+    bool GoToPrev() { return GoPlaces(-1, 0); }
+    bool GoToUber() { return GoPlaces(0, -1); }
+    bool GoToDown() { return GoPlaces(0, +1); }
+    bool GoToRoot() { return GoPlaces(0,  0); }
 
     bool PushIter(Type const* p)
     {
@@ -123,10 +123,10 @@ public:
 
         if (iter)
         {
-            if (GotoDown())
+            if (GoToDown())
             {
                 PushPrev(p);
-                GotoUber();
+                GoToUber();
             }
             else
             {
@@ -159,7 +159,7 @@ public:
 
         if (iter->next == iter)
         {
-            GotoUber();
+            GoToUber();
             RecursiveDestruction(iter->down);
             iter->down = nullptr;
             return true;

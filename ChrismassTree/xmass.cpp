@@ -38,7 +38,7 @@ void ShowCurrentNode(Tree& tree)
 
     if (uber)
     {
-        for (std::string str : { std::string{}, ToStr(uber), std::string{}})
+        for (const auto& str : { std::string{}, ToStr(uber), std::string{}})
         {
             std::cout.width(5);
             std::cout << str;
@@ -48,7 +48,7 @@ void ShowCurrentNode(Tree& tree)
 
     if (self)
     {
-        for (std::string str : { ToStr(prev), ToStr(self), ToStr(next) })
+        for (const auto& str : { ToStr(prev), ToStr(self), ToStr(next) })
         {
             std::cout.width(5);
             std::cout << str;
@@ -63,7 +63,7 @@ void ShowCurrentNode(Tree& tree)
     
     if (down)
     {
-        for (std::string str : { std::string{}, ToStr(down), std::string{} })
+        for (const auto& str : { std::string{}, ToStr(down), std::string{} })
         {
             std::cout.width(5);
             std::cout << str;
@@ -91,26 +91,56 @@ void ShowCurrentRing(Tree& tree)
 
 int* GetInt();
 
-#define TestPush(Way, tree) \
-{\
-    int* p = GetInt();\
-    bool result = tree.Push##Way (p);\
-    std::cout << (result ? "ok" : "fail") << std::endl;\
+enum class Way{Next = 1, Prev, Down, Uber, Root, Iter};
+std::string WayToStr(Way way)
+{
+    switch (way)
+    {
+        case Way::Next: return "next";
+        case Way::Prev: return "prev";
+        case Way::Down: return "down";
+        case Way::Uber: return "uber";
+        case Way::Root: return "root";
+        case Way::Iter: return "iter";
+    }
 }
 
-#define TestGoto(Way, tree)\
-{\
-    std::cout << "Going " #Way " from: " << std::endl;\
-    ShowCurrentNode(tree);\
-    if (tree.Goto##Way())\
-    {\
-        std::cout << "to" << std::endl;\
-        ShowCurrentNode(tree);\
-    }\
-    else\
-    {\
-        std::cout << "to nowhere" << std::endl;\
-    }\
+void TestPush(Way way, Tree& tree)
+{
+    int* p = GetInt();
+    bool result = false;
+    switch (way)
+    {
+        case Way::Down: result = tree.PushDown(p); break;
+        case Way::Next: result = tree.PushNext(p); break;
+        case Way::Prev: result = tree.PushPrev(p); break;
+        case Way::Iter: result = tree.PushIter(p); break;
+    }
+    std::cout << (result ? "ok" : "fail") << std::endl;
+}
+
+void TestGoTo(Way way, Tree& tree)
+{
+    std::cout << "Going " << WayToStr(way) << " from: " << std::endl;
+    ShowCurrentNode(tree);
+    bool result = false;
+    switch (way)
+    {
+        case Way::Next: result = tree.GoToNext(); break;
+        case Way::Prev: result = tree.GoToPrev(); break;
+        case Way::Down: result = tree.GoToDown(); break;
+        case Way::Uber: result = tree.GoToUber(); break;
+        case Way::Root: result = tree.GoToRoot(); break;
+    }
+    if (result)
+    {
+        std::cout << "to" << std::endl; 
+        ShowCurrentNode(tree);
+    }
+    else
+    {
+        std::cout << "to nowhere" << std::endl;
+    }
 }
 
 void TestPopIter(Tree&);
@@ -155,27 +185,27 @@ int MainTest()
 
             if (str == "next")
             {
-                TestGoto(Next, tree);
+                TestGoTo(Way::Next, tree);
                 continue;
             }
             if (str == "prev")
             {
-                TestGoto(Prev, tree);
+                TestGoTo(Way::Prev, tree);
                 continue;
             }
             if (str == "uber")
             {
-                TestGoto(Uber, tree);
+                TestGoTo(Way::Uber, tree);
                 continue;
             }
             if (str == "down")
             {
-                TestGoto(Down, tree);
+                TestGoTo(Way::Down, tree);
                 continue;
             }
             if (str == "root")
             {
-                TestGoto(Root, tree);
+                TestGoTo(Way::Root, tree);
                 continue;
             }
         }
@@ -187,22 +217,22 @@ int MainTest()
 
             if (str == "iter")
             {
-                TestPush(Iter, tree);
+                TestPush(Way::Iter, tree);
                 continue;
             }
             if (str == "next")
             {
-                TestPush(Next, tree);
+                TestPush(Way::Next, tree);
                 continue;
             }
             if (str == "prev")
             {
-                TestPush(Prev, tree);
+                TestPush(Way::Prev, tree);
                 continue;
             }
             if (str == "down")
             {
-                TestPush(Down, tree);
+                TestPush(Way::Down, tree);
                 continue;
             }
         }
