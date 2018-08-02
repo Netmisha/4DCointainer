@@ -6,8 +6,8 @@
 template<class Type>
 struct Node
 {
-    Node(Type const* ptr) {
-        pval = const_cast<Type*>(ptr);
+    Node(Type* ptr) {
+        pval = ptr;
     }
     ~Node() {
         delete pval;
@@ -15,9 +15,9 @@ struct Node
     Type const& GetVal() const {
         return *pval;
     }
-    void        SetVal(Type const* ptr) {
+    void        SetVal(Type* ptr) {
         delete pval;
-        pval = const_cast<Type*>(ptr);
+        pval = ptr;
     }
     Node* uber = nullptr;
     Node* next = nullptr;
@@ -90,7 +90,7 @@ public:
         return false;
     }
 
-    bool PushIter(Type const* p)
+    bool PushIter(Type* p)
     {
         if (not iter)
         {
@@ -107,7 +107,7 @@ public:
 
         return true;
     }
-    bool PushPrev(Type const* p)
+    bool PushPrev(Type* p)
     {
         bool pushResult = false;
 
@@ -132,7 +132,7 @@ public:
 
         return pushResult;
     }
-    bool PushNext(Type const* p)
+    bool PushNext(Type* p)
     {
         bool pushResult = false;
 
@@ -157,7 +157,7 @@ public:
 
         return pushResult;
     }
-    bool PushDown(Type const* p)
+    bool PushDown(Type* p)
     {
         bool pushResult = false;
 
