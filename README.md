@@ -42,14 +42,11 @@ Our MainTest provides ability to fill up such container in runtime
 1. Build solution and run it in Debug mode
 2. Use commands like
 ```
-	show  elem|ring 
-```
-shows current element | ring bound to current elemen
-```
-    push  iter|prev|next|down  element  --  push new element (int) into container 
-	goto  iter|prev|uber|next|down  --  move current element in direction (if possible)
-    pop  --  pops current element (also kills its children)
-    quit  --  quit application
+show  elem|ring  --  shows current element | ring bound to current elemen
+push  iter|prev|next|down  element  --  push new element (int) into container 
+goto  iter|prev|uber|next|down  --  move current element in direction (if possible)
+pop  --  pops current element (also kills its children)
+quit  --  quit application
 ```
 3. Start with pushing in root-element
 ```
