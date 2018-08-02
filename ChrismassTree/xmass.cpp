@@ -214,7 +214,8 @@ int MainTest()
 
         std::cout << "unknown command, try:" << std::endl;
         std::cout << "show  elem|ring" << std::endl;
-        std::cout << "push|goto  iter|prev|uber|next|down" << std::endl;
+        std::cout << "push  iter|prev|next|down" << std::endl;
+        std::cout << "goto  iter|prev|uber|next|down" << std::endl;
         std::cout << "pop" << std::endl;
         std::cout << "quit" << std::endl;
     }
