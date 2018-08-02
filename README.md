@@ -10,15 +10,18 @@ Basic element of container has acess to it's
 - a child element ( that can also have a child element and a circle of sybling elements of it's own )
 
 The container can be used to store (for example) a sequence of application menue's
-	Like
-	    MAIN_MENU
-	        <-   CHOICE_1  ->
-	            <-   SUB_CHOICE_1_1   <->   SUB_CHOICE_1_2   <->   SUB_CHOICE_1_3    <->   ...   <->   SUB_CHOICE_1_1
-	        <-   CHOICE_2  ->
-	            ...
-	                ...   ...   ...
-	        <-   CHOICE_3  ->
+Like
+```
+	MAIN_MENU
+	    <-   CHOICE_1  ->
+	        <-   SUB_CHOICE_1_1   <->   SUB_CHOICE_1_2   <->   SUB_CHOICE_1_3    <->   ...   <->   SUB_CHOICE_1_1
+	    <-   CHOICE_2  ->
+	        ...
+	            ...   ...   ...
+	    <-   CHOICE_3  ->
+```
 Or
+```
 	Game
 		Lvl-1
 			Area-11
@@ -29,6 +32,7 @@ Or
 			Area-2
 		Lvl-2
 			Area-1
+```
 Etc.
 
 The structure is quite hard to represent graphically becouse of its almost nature
